@@ -573,10 +573,6 @@ func gatherDependencySet(v reflect.Value, deps map[Resource]struct{}, joins map[
 		}
 		// Check for an actual Resource.
 		if v.Type().Implements(resourceType) {
-			if v.CanInterface() {
-				resource := v.Convert(resourceType).Interface().(Resource)
-				deps[resource] = struct{}{}
-			}
 			return
 		}
 
@@ -727,6 +723,11 @@ func awaitInputs(ctx context.Context, v, resolved reflect.Value) (bool, bool, []
 	}
 
 	contract.Assertf(valueType.AssignableTo(resolved.Type()), "%s not assignable to %s", valueType.String(), resolved.Type().String())
+
+	if v.CanInterface() && v.Type().Implements(resourceType) {
+		resolved.Set(v)
+		return true, false, nil, nil
+	}
 
 	// If the resolved type is an interface, make an appropriate destination from the value's type.
 	if resolved.Kind() == reflect.Interface {
