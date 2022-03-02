@@ -50,6 +50,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        exclude:
+          - platform: macos-latest
         platform:
           - ubuntu-latest
           - windows-latest
