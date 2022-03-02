@@ -826,3 +826,29 @@ func TestWaitOrphanedDeprecatedOutput(t *testing.T) {
 	state := output.getState()
 	assert.Equal(t, uint32(outputPending), state.state)
 }
+
+func TestExportResource(t *testing.T) {
+	mocks := &testMonitor{
+		NewResourceF: func(args MockResourceArgs) (string, resource.PropertyMap, error) {
+			return "someID", resource.PropertyMap{"foo": resource.NewStringProperty("qux")}, nil
+		},
+	}
+
+	var any Output
+	err := RunErr(func(ctx *Context) error {
+		var res testResource2
+		err := ctx.RegisterResource("test:resource:type", "resA", &testResource2Inputs{
+			Foo: String("oof"),
+		}, &res)
+		assert.NoError(t, err)
+
+		any = Any(&res)
+
+		ctx.Export("any", any)
+		return nil
+	}, WithMocks("project", "stack", mocks))
+	assert.NoError(t, err)
+
+	state := any.getState()
+	assert.NotNil(t, state.value)
+}
