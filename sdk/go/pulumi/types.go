@@ -713,7 +713,7 @@ func awaitInputs(ctx context.Context, v, resolved reflect.Value) (bool, bool, []
 			valueType = v.Type()
 		} else {
 			// Handle pointer inputs.
-			if v.Kind() == reflect.Ptr {
+			if v.Kind() == reflect.Ptr && !(v.CanInterface() && v.Type().Implements(resourceType)) {
 				v, valueType = v.Elem(), valueType.Elem()
 
 				resolved.Set(reflect.New(resolved.Type().Elem()))
