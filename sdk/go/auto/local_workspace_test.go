@@ -26,7 +26,6 @@ import (
 	"runtime"
 	"strings"
 	"testing"
-	"time"
 
 	"github.com/stretchr/testify/require"
 
@@ -54,6 +53,8 @@ const pulumiTestOrg = "pulumi-test"
 const windows = "windows"
 
 func TestWorkspaceSecretsProvider(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 	sName := fmt.Sprintf("int_test%d", rangeIn(10000000, 99999999))
 	stackName := FullyQualifiedStackName(pulumiOrg, pName, sName)
@@ -125,6 +126,7 @@ func TestWorkspaceSecretsProvider(t *testing.T) {
 	assert.Equal(t, "succeeded", dRes.Summary.Result)
 }
 
+//nolint:paralleltest // mutates environment variables
 func TestRemoveWithForce(t *testing.T) {
 	ctx := context.Background()
 	sName := fmt.Sprintf("int_test%d", rangeIn(10000000, 99999999))
@@ -205,6 +207,7 @@ func TestRemoveWithForce(t *testing.T) {
 	assert.True(t, strings.Contains(err.Error(), "no stack named"))
 }
 
+//nolint:paralleltest // mutates environment variables
 func TestNewStackLocalSource(t *testing.T) {
 	ctx := context.Background()
 	sName := fmt.Sprintf("int_test%d", rangeIn(10000000, 99999999))
@@ -317,6 +320,7 @@ func TestNewStackLocalSource(t *testing.T) {
 	assert.Equal(t, "succeeded", dRes.Summary.Result)
 }
 
+//nolint:paralleltest // mutates environment variables
 func TestUpsertStackLocalSource(t *testing.T) {
 	ctx := context.Background()
 	sName := fmt.Sprintf("int_test%d", rangeIn(10000000, 99999999))
@@ -423,11 +427,12 @@ func TestUpsertStackLocalSource(t *testing.T) {
 }
 
 func rangeIn(low, hi int) int {
-	rand.Seed(time.Now().UnixNano())
 	return low + rand.Intn(hi-low) //nolint:gosec
 }
 
 func TestNewStackRemoteSource(t *testing.T) {
+	t.Parallel()
+
 	if runtime.GOOS == windows {
 		t.Skip("TODO[pulumi/pulumi#8646] update github.com/pulumi/test-repo to fix Go compilation on Windows")
 	}
@@ -524,6 +529,8 @@ func TestNewStackRemoteSource(t *testing.T) {
 }
 
 func TestUpsertStackRemoteSource(t *testing.T) {
+	t.Parallel()
+
 	if runtime.GOOS == windows {
 		t.Skip("TODO[pulumi/pulumi#8646] update github.com/pulumi/test-repo to fix Go compilation on Windows")
 	}
@@ -620,6 +627,8 @@ func TestUpsertStackRemoteSource(t *testing.T) {
 }
 
 func TestNewStackRemoteSourceWithSetup(t *testing.T) {
+	t.Parallel()
+
 	if runtime.GOOS == windows {
 		t.Skip("TODO[pulumi/pulumi#8646] update github.com/pulumi/test-repo to fix Go compilation on Windows")
 	}
@@ -728,6 +737,8 @@ func TestNewStackRemoteSourceWithSetup(t *testing.T) {
 }
 
 func TestUpsertStackRemoteSourceWithSetup(t *testing.T) {
+	t.Parallel()
+
 	if runtime.GOOS == windows {
 		t.Skip("TODO[pulumi/pulumi#8646] update github.com/pulumi/test-repo to fix Go compilation on Windows")
 	}
@@ -836,6 +847,8 @@ func TestUpsertStackRemoteSourceWithSetup(t *testing.T) {
 }
 
 func TestNewStackInlineSource(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 	sName := fmt.Sprintf("int_test%d", rangeIn(10000000, 99999999))
 	stackName := FullyQualifiedStackName(pulumiOrg, pName, sName)
@@ -930,6 +943,8 @@ func TestNewStackInlineSource(t *testing.T) {
 }
 
 func TestUpsertStackInlineSource(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 	sName := fmt.Sprintf("int_test%d", rangeIn(10000000, 99999999))
 	stackName := FullyQualifiedStackName(pulumiOrg, pName, sName)
@@ -1023,6 +1038,8 @@ func TestUpsertStackInlineSource(t *testing.T) {
 }
 
 func TestNestedStackFails(t *testing.T) {
+	t.Parallel()
+
 	// FIXME: see https://github.com/pulumi/pulumi/issues/5301
 	t.Skip("skipping test, see pulumi/pulumi#5301")
 	testCtx := context.Background()
@@ -1085,6 +1102,8 @@ func TestNestedStackFails(t *testing.T) {
 }
 
 func TestProgressStreams(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 	pName := "inline_progress_streams"
 	sName := fmt.Sprintf("int_test%d", rangeIn(10000000, 99999999))
@@ -1156,6 +1175,8 @@ func TestProgressStreams(t *testing.T) {
 }
 
 func TestImportExportStack(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 	sName := fmt.Sprintf("int_test%d", rangeIn(10000000, 99999999))
 	stackName := FullyQualifiedStackName(pulumiOrg, pName, sName)
@@ -1228,6 +1249,8 @@ func TestImportExportStack(t *testing.T) {
 }
 
 func TestConfigFlagLike(t *testing.T) {
+	t.Parallel()
+
 	if getTestOrg() != pulumiTestOrg {
 		return
 	}
@@ -1261,6 +1284,8 @@ func TestConfigFlagLike(t *testing.T) {
 }
 
 func TestNestedConfig(t *testing.T) {
+	t.Parallel()
+
 	if getTestOrg() != pulumiTestOrg {
 		return
 	}
@@ -1323,6 +1348,7 @@ func TestNestedConfig(t *testing.T) {
 	assert.JSONEq(t, "[\"one\",\"two\",\"three\"]", list.Value)
 }
 
+//nolint:paralleltest // mutates environment variables
 func TestStructuredOutput(t *testing.T) {
 	ctx := context.Background()
 	sName := fmt.Sprintf("int_test%d", rangeIn(10000000, 99999999))
@@ -1441,6 +1467,8 @@ func TestStructuredOutput(t *testing.T) {
 }
 
 func TestSupportsStackOutputs(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 	sName := fmt.Sprintf("int_test%d", rangeIn(10000000, 99999999))
 	stackName := FullyQualifiedStackName(pulumiOrg, pName, sName)
@@ -1548,6 +1576,8 @@ func TestSupportsStackOutputs(t *testing.T) {
 }
 
 func TestPulumiVersion(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 	ws, err := NewLocalWorkspace(ctx)
 	if err != nil {
@@ -1645,8 +1675,13 @@ var minVersionTests = []struct {
 }
 
 func TestMinimumVersion(t *testing.T) {
+	t.Parallel()
+
 	for _, tt := range minVersionTests {
+		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			minVersion := semver.Version{Major: 2, Minor: 21, Patch: 1}
 
 			_, err := parseAndValidatePulumiVersion(minVersion, tt.currentVersion, tt.optOut)
@@ -1662,6 +1697,8 @@ func TestMinimumVersion(t *testing.T) {
 }
 
 func TestProjectSettingsRespected(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 	sName := fmt.Sprintf("int_test%d", rangeIn(10000000, 99999999))
 	pName := "correct_project"
@@ -1685,6 +1722,8 @@ func TestProjectSettingsRespected(t *testing.T) {
 }
 
 func TestSaveStackSettings(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 	sName := fmt.Sprintf("int_test%d", rangeIn(10000000, 99999999))
 	stackName := FullyQualifiedStackName(pulumiOrg, pName, sName)
@@ -1744,6 +1783,8 @@ func TestSaveStackSettings(t *testing.T) {
 }
 
 func TestConfigSecretWarnings(t *testing.T) {
+	t.Parallel()
+
 	// TODO[pulumi/pulumi#7127]: Re-enabled the warning.
 	t.Skip("Temporarily skipping test until we've re-enabled the warning - pulumi/pulumi#7127")
 	ctx := context.Background()
