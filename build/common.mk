@@ -90,7 +90,7 @@
 #
 # Importing common.mk should be the first thing your Makefile does, after
 # optionally setting SUB_PROJECTS, PROJECT_NAME and NODE_MODULE_NAME.
-SHELL       := /bin/bash
+SHELL       ?= /bin/bash
 .SHELLFLAGS := -ec
 
 STEP_MESSAGE = @echo -e "\033[0;32m$(shell echo '$@' | tr a-z A-Z | tr '_' ' '):\033[0m"
@@ -105,9 +105,9 @@ endif
 PYTHON ?= python3
 PIP ?= pip3
 
-PULUMI_BIN          := $(PULUMI_ROOT)/bin
-PULUMI_NODE_MODULES := $(PULUMI_ROOT)/node_modules
-PULUMI_NUGET        := $(PULUMI_ROOT)/nuget
+PULUMI_BIN          ?= $(PULUMI_ROOT)/bin
+PULUMI_NODE_MODULES ?= $(PULUMI_ROOT)/node_modules
+PULUMI_NUGET        ?= $(PULUMI_ROOT)/nuget
 
 TESTSUITE_SKIPPED = $(PYTHON) ${PROJECT_ROOT}/scripts/skipped.py
 GO_TEST_FAST = $(PYTHON) ${PROJECT_ROOT}/scripts/go-test.py -short -count=1 -cover -tags=all -timeout 1h -parallel ${TESTPARALLELISM}
