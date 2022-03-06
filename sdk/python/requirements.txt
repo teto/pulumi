@@ -12,9 +12,9 @@ pylint==2.10.2
 mypy>=0.78
 pytest
 pytest-timeout
-types-six
-types-pyyaml
-types-protobuf
+# types-six
+# types-pyyaml
+# types-protobuf
 pytest-asyncio
 coverage>=6.0.2
 wheel
