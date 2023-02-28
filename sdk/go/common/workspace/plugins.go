@@ -1702,6 +1702,7 @@ func getPluginInfoAndPath(
 	includeAmbient := !(env.IgnoreAmbientPlugins.Value()) || isBundled
 	if includeAmbient {
 		filename = (&PluginSpec{Kind: kind, Name: name}).File()
+		logging.V(6).Infof("running LookPath on filename %s", filename)
 		if path, err := exec.LookPath(filename); err == nil {
 			logging.V(6).Infof("GetPluginPath(%s, %s, %v): found on $PATH %s", kind, name, version, path)
 			return &PluginInfo{

@@ -144,7 +144,9 @@ func main() {
 
 // locateModule resolves a node module name to a file path that can be loaded
 func locateModule(ctx context.Context, mod string, nodeBin string) (string, error) {
+
 	args := []string{"-e", fmt.Sprintf("console.log(require.resolve('%s'));", mod)}
+	logging.V(3).Errorf("nodejs launching nodeBin %s with args: %s", nodeBin, args)
 
 	tracingSpan, _ := opentracing.StartSpanFromContext(ctx,
 		"locateModule",
